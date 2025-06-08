@@ -3,15 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Models\Continente;
+use App\Models\Pais;
 use Illuminate\Http\Request;
 
 class ContinenteController extends Controller
 {
-    function listarContinente()
+    public function listarContinente(Request $request)
     {
         $continentes = Continente::all();
-        return view('welcome', compact('continentes'));
+        $paises = collect(); // colección vacía
+        $nombreContinente = null;
+
+        if ($request->has('continente')) {
+            $codigo = $request->input('continente');
+            $paises = Pais::where('codigo_continente', $codigo)->get();
+            $continente = Continente::find($codigo);
+            $nombreContinente = $continente ? $continente->nombre_continente : null;
+        }
+
+        return view('welcome', compact('continentes', 'paises', 'nombreContinente'));
     }
+
 
     function crearContinente(Request $request)
     {
