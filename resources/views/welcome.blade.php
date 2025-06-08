@@ -73,11 +73,51 @@
                         <button type="submit" onclick="return confirm('¿Seguro que deseas eliminar este país?');">Eliminar</button>
                     </form>
                 </td>
+                <td>
+                    <a href="{{ url('/?continente=' . $pais->codigo_continente . '&pais=' . $pais->codigo_pais) }}">Ver Estados</a>
+                </td>
+            </tr>
+            @endforeach
+            @if($continentes->isEmpty())
+            <tr>
+                <td colspan="4">No hay Paises registrados.</td>
+            </tr>
+            @endif
+        </tbody>
+    </table>
+    @endif
+
+    @if($estados->isNotEmpty())
+    <h2>Estados del país: {{ $nombrePais }}</h2>
+
+    <table border="1" cellpadding="8" cellspacing="0" style="margin-top:20px;">
+        <thead>
+            <tr>
+                <th>ID Estado</th>
+                <th>Nombre del Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($estados as $estado)
+            <tr>
+                <td>{{ $estado->codigo_estado }}</td>
+                <td>{{ $estado->nombre_estado }}</td>
+                <td>
+                    <a href="{{ url('/formularioE/' . $estado->codigo_estado) }}">Editar</a>
+                    <form action="{{ url('/estado/' . $estado->codigo_estado) }}" method="POST" style="display:inline;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" onclick="return confirm('¿Seguro que deseas eliminar este estado?');">Eliminar</button>
+                    </form>
+                </td>
             </tr>
             @endforeach
         </tbody>
     </table>
     @endif
+
+
 
 </body>
 

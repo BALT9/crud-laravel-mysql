@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Continente;
+use App\Models\Estado;
 use App\Models\Pais;
 use Illuminate\Http\Request;
 
@@ -11,18 +12,29 @@ class ContinenteController extends Controller
     public function listarContinente(Request $request)
     {
         $continentes = Continente::all();
-        $paises = collect(); // colección vacía
+        $paises = collect();
+        $estados = collect();
         $nombreContinente = null;
+        $nombrePais = null;
 
         if ($request->has('continente')) {
             $codigo = $request->input('continente');
-            $paises = Pais::where('codigo_continente', $codigo)->get();
-            $continente = Continente::find($codigo);
+            $paises = \App\Models\Pais::where('codigo_continente', $codigo)->get();
+            $continente = \App\Models\Continente::find($codigo);
             $nombreContinente = $continente ? $continente->nombre_continente : null;
         }
 
-        return view('welcome', compact('continentes', 'paises', 'nombreContinente'));
+        if ($request->has('pais')) {
+            $codigoPais = $request->input('pais');
+            $estados = \App\Models\Estado::where('codigo_pais', $codigoPais)->get();
+            $pais = \App\Models\Pais::find($codigoPais);
+            $nombrePais = $pais ? $pais->nombre_pais : null;
+        }
+
+        return view('welcome', compact('continentes', 'paises', 'estados', 'nombreContinente', 'nombrePais'));
     }
+
+
 
 
     function crearContinente(Request $request)
