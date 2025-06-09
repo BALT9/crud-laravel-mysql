@@ -5,119 +5,133 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Lista de Continentes y Países</title>
+    <link rel="stylesheet" href="{{ asset('css/welcom.css') }}">
 </head>
 
-<body>
-    <h1>Lista de Continentes</h1>
-    <a href="/formulario">Agregar Continente</a>
-    <a href="/formularioP">Agregar País</a>
-    <a href="/formularioE">Agregar Estado</a>
+<body class="container">
+    <section class="hero">
+        <h1>Bienvenido al Explorador de Continentes</h1>
+        <p>Consulta, edita y organiza continentes, países y estados de forma sencilla.</p>
+    </section>
 
-    <table border="1" cellpadding="8" cellspacing="0" style="margin-top:20px;">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre del Continente</th>
-                <th>Acciones</th>
-                <th>Ver Países</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($continentes as $continente)
-            <tr>
-                <td>{{ $continente->codigo_continente }}</td>
-                <td>{{ $continente->nombre_continente }}</td>
-                <td>
-                    <a href="{{ url('/formulario/' . $continente->codigo_continente) }}">Editar</a>
-                    <form action="{{ url('/continente/' . $continente->codigo_continente) }}" method="POST" style="display:inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" onclick="return confirm('¿Seguro que deseas eliminar este continente?');">Eliminar</button>
-                    </form>
-                </td>
-                <td>
-                    <a href="{{ url('/?continente=' . $continente->codigo_continente) }}">Ver Países</a>
-                </td>
-            </tr>
-            @endforeach
+    <div class="container-grid">
+        <div class="tabla1">
+            <h1>Lista de Continentes</h1>
+            <a href="/formulario" class="btn btn-add">Agregar Continente</a>
 
-            @if($continentes->isEmpty())
-            <tr>
-                <td colspan="4">No hay continentes registrados.</td>
-            </tr>
+            <div class="cards-container">
+                @foreach ($continentes as $continente)
+                <article class="card-continente" role="region" aria-labelledby="continent-{{ $continente->codigo_continente }}">
+                    <header class="card-header" id="continent-{{ $continente->codigo_continente }}">
+                        {{ $continente->nombre_continente }}
+                    </header>
+                    <div class="card-body">
+                        <p><strong>ID:</strong> {{ $continente->codigo_continente }}</p>
+                        <div class="card-actions">
+                            <div class="acciones">
+                                <a href="{{ url('/formulario/' . $continente->codigo_continente) }}" class="btn edit">Editar</a>
+
+                                <form action="{{ url('/continente/' . $continente->codigo_continente) }}" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar este continente?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn delete">Eliminar</button>
+                                </form>
+                            </div>
+
+                            <a href="{{ url('/?continente=' . $continente->codigo_continente) }}" class="btn view">Ver Países</a>
+                        </div>
+                    </div>
+                </article>
+                @endforeach
+
+                @if($continentes->isEmpty())
+                <div class="no-continentes">
+                    No hay continentes registrados.
+                </div>
+                @endif
+            </div>
+        </div>
+        <div class="tabla1">
+            <h1>Lista de Paises</h1>
+            <a href="/formularioP" class="btn btn-add">Agregar País</a>
+            @if($paises->isNotEmpty())
+            <h2>Países del continente: <span>{{ $nombreContinente }}</span></h2>
+
+            <div class="cards-container">
+                @foreach ($paises as $pais)
+                <article class="card-continente" role="region" aria-labelledby="pais-{{ $pais->codigo_pais }}">
+                    <header class="card-header" id="pais-{{ $pais->codigo_pais }}">
+                        {{ $pais->nombre_pais }}
+                    </header>
+                    <div class="card-body">
+                        <p><strong>ID País:</strong> {{ $pais->codigo_pais }}</p>
+                        <div class="card-actions">
+                            <div class="acciones">
+                                <a href="{{ url('/formularioP/' . $pais->codigo_pais) }}" class="btn edit">Editar</a>
+
+                                <form action="{{ url('/pais/' . $pais->codigo_pais) }}" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar este país?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn delete">Eliminar</button>
+                                </form>
+                            </div>
+
+                            <a href="{{ url('/?continente=' . $pais->codigo_continente . '&pais=' . $pais->codigo_pais) }}" class="btn view">Ver Estados</a>
+                        </div>
+                    </div>
+                </article>
+                @endforeach
+
+                @if($paises->isEmpty())
+                <div class="no-paises">
+                    No hay países registrados.
+                </div>
+                @endif
+            </div>
             @endif
-        </tbody>
-    </table>
+        </div>
+        <div class="tabla1">
+            <h1>Lista de Estados</h1>
+            <a href="/formularioE" class="btn btn-add">Agregar Estado</a>
 
-    @if($paises->isNotEmpty())
-    <h2>Países del continente: {{ $nombreContinente }}</h2>
+            @if($estados->isNotEmpty())
+            <h2>Estados del país: <span>{{ $nombrePais }}</span></h2>
 
-    <table border="1" cellpadding="8" cellspacing="0" style="margin-top:20px;">
-        <thead>
-            <tr>
-                <th>ID País</th>
-                <th>Nombre del País</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($paises as $pais)
-            <tr>
-                <td>{{ $pais->codigo_pais }}</td>
-                <td>{{ $pais->nombre_pais }}</td>
-                <td>
-                    <a href="{{ url('/formularioP/' . $pais->codigo_pais) }}">Editar</a>
-                    <form action="{{ url('/pais/' . $pais->codigo_pais) }}" method="POST" style="display:inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" onclick="return confirm('¿Seguro que deseas eliminar este país?');">Eliminar</button>
-                    </form>
-                </td>
-                <td>
-                    <a href="{{ url('/?continente=' . $pais->codigo_continente . '&pais=' . $pais->codigo_pais) }}">Ver Estados</a>
-                </td>
-            </tr>
-            @endforeach
-            @if($continentes->isEmpty())
-            <tr>
-                <td colspan="4">No hay Paises registrados.</td>
-            </tr>
+            <div class="cards-container">
+                @foreach ($estados as $estado)
+                <article class="card-continente" role="region" aria-labelledby="estado-{{ $estado->codigo_estado }}">
+                    <header class="card-header" id="estado-{{ $estado->codigo_estado }}">
+                        {{ $estado->nombre_estado }}
+                    </header>
+                    <div class="card-body">
+                        <p><strong>ID Estado:</strong> {{ $estado->codigo_estado }}</p>
+                        <div class="card-actions">
+                            <div class="acciones">
+                                <a href="{{ url('/formularioE/' . $estado->codigo_estado) }}" class="btn edit">Editar</a>
+
+                                <form action="{{ url('/estado/' . $estado->codigo_estado) }}" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar este estado?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn delete">Eliminar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                @endforeach
+            </div>
+            @else
+            <div class="no-estados">
+                No hay estados registrados.
+            </div>
             @endif
-        </tbody>
-    </table>
-    @endif
+        </div>
 
-    @if($estados->isNotEmpty())
-    <h2>Estados del país: {{ $nombrePais }}</h2>
+    </div>
 
-    <table border="1" cellpadding="8" cellspacing="0" style="margin-top:20px;">
-        <thead>
-            <tr>
-                <th>ID Estado</th>
-                <th>Nombre del Estado</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($estados as $estado)
-            <tr>
-                <td>{{ $estado->codigo_estado }}</td>
-                <td>{{ $estado->nombre_estado }}</td>
-                <td>
-                    <a href="{{ url('/formularioE/' . $estado->codigo_estado) }}">Editar</a>
-                    <form action="{{ url('/estado/' . $estado->codigo_estado) }}" method="POST" style="display:inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" onclick="return confirm('¿Seguro que deseas eliminar este estado?');">Eliminar</button>
-                    </form>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-    @endif
-
-
+    <footer class="footer">
+        <p>&copy; {{ date('Y') }} Explorador de Continentes. Todos los derechos reservados.</p>
+    </footer>
 
 </body>
 
