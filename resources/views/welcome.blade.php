@@ -81,12 +81,10 @@
                     </div>
                 </article>
                 @endforeach
-
-                @if($paises->isEmpty())
-                <div class="no-paises">
-                    No hay países registrados.
-                </div>
-                @endif
+            </div>
+            @else
+            <div class="no-estados">
+                No hay estados registrados.
             </div>
             @endif
         </div>
