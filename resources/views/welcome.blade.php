@@ -130,7 +130,7 @@
     </div>
 
     <footer class="footer">
-        <p>&copy; {{ date('Y') }} Explorador de Continentes. Todos los derechos reservados.</p>
+        <p>&copy; 2025 Explorador de Continentes. Todos los derechos reservados.</p>
     </footer>
 
 </body>
